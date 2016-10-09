@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1476020235 source:d:\calison\uneb\semestres\nono\ed2\arvoreb\main.c
+	"main.h"
+	<allegro5/allegro.h>
+	<allegro5/allegro_image.h>
+	<allegro5/allegro_font.h>
+	<allegro5/allegro_ttf.h>
+
+1476018077 d:\calison\uneb\semestres\nono\ed2\arvoreb\main.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1476019264 source:d:\calison\uneb\semestres\nono\ed2\arvoreb\arvoreb.c
+	"main.h"
+
