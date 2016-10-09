@@ -6,11 +6,11 @@
 	<allegro5/allegro_font.h>
 	<allegro5/allegro_ttf.h>
 
-1476026520 d:\calison\uneb\semestres\nono\ed2\arvoreb\main.h
+1476052402 d:\calison\uneb\semestres\nono\ed2\arvoreb\main.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1476028346 source:d:\calison\uneb\semestres\nono\ed2\arvoreb\arvoreb.c
+1476055443 source:d:\calison\uneb\semestres\nono\ed2\arvoreb\arvoreb.c
 	"main.h"
 

@@ -69,9 +69,9 @@ void listarPorData(arvoreB *arvB,int dia, int mes, int ano,int tipo,int idade,in
 void listarSeTelefoneTrab(arvoreB *arvB);
 void listarContatoPorID(arvoreB *arvB);
 void listarContatoPorNome(arvoreB *arvB);
-void gravaRegistro (Contato c);
-void gravaArvore(arvoreB *arvB);
-arvoreB* carregaArvore();
+void gravaRegistro (Contato c,char arquivo[]);
+void gravaArvore(arvoreB *arvB,char arquivo[]);
+arvoreB* carregaArvore(int param);
 int criarArvore();
 arvoreB *Delete(int target, arvoreB *root);
 BoolDelete RecDelete(int target,arvoreB *p);

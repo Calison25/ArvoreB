@@ -4,12 +4,12 @@ int step = 0;
 
 void start(int param){
 	int encontrou, dia, mes, ano, idade, id;
+	char letra;
 	arvoreB* a1 = NULL;
-	arvoreB* a2 = NULL;
 	Contato aux;
 	encontrou = 0;
 
-	a1 = carregaArvore();
+	a1 = carregaArvore(param);
 
 	switch(param){
         case ALFABETICA:{
@@ -17,7 +17,11 @@ void start(int param){
             break;
         }
         case LETRA:{
-            listarPorLetra(a1,'Z');
+            printf("\n\tInforme uma letra\n");
+            printf("\n\t\t");
+            scanf("%c",&letra);
+            fflush(stdin);
+            listarPorLetra(a1,letra);
             break;
         }
         case TELEFONE:{
@@ -33,78 +37,78 @@ void start(int param){
             break;
         }
         case IDADE:{
-            printf("Informe uma idade");
-            printf("\n");
+            printf("\n\tInforme uma idade\n");
+            printf("\n\t\t");
             scanf("%d",&idade);
             fflush(stdin);
             printf("\n");
 
             listarPorData(a1,0,0,0,IDADE,idade,&encontrou);
             if(!encontrou){
-              printf("\nIdade nao encontrada\n");
+              printf("\n\tIdade nao encontrada\n");
             }
             break;
         }
         case ESPECIFICA:{
-            printf("\nVoce selecionou data especifica");
+            printf("\n\tVoce selecionou data especifica");
 
-            printf("\nInforme o dia");
-            printf("\n");
+            printf("\n\tInforme o dia");
+            printf("\n\t\t");
             scanf("%d",&dia);
             fflush(stdin);
             printf("\n");
 
-            printf("\nInforme o mes");
-            printf("\n");
+            printf("\n\tInforme o mes");
+            printf("\n\t\t");
             scanf("%d",&mes);
             fflush(stdin);
             printf("\n");
 
-            printf("\nInforme o ano");
-            printf("\n");
+            printf("\n\tInforme o ano");
+            printf("\n\t\t");
             scanf("%d",&ano);
             fflush(stdin);
             printf("\n");
 
             listarPorData(a1,dia,mes,ano,ESPECIFICA,0,&encontrou);
             if(!encontrou){
-              printf("\nData nao encontrada\n");
+              printf("\n\tData nao encontrada\n");
             }
             break;
         }
         case QUALQUER:{
-            printf("\nInforme um dia, ou um mês, ou um ano que o programa irá te retornar se alguma dessas existir\n");
+            printf("\n\tInforme um dia, ou um mês, ou um ano que o programa irá te retornar se alguma dessas existir\n");
 
-            printf("\nInforme o dia\n");
-            printf("\n");
+            printf("\n\tInforme o dia\n");
+            printf("\n\t\t");
             scanf("%d",&dia);
             fflush(stdin);
             printf("\n");
 
-            printf("\nInforme o mes\n");
-            printf("\n");
+            printf("\n\tInforme o mes\n");
+            printf("\n\t\t");
             scanf("%d",&mes);
             fflush(stdin);
             printf("\n");
 
-            printf("\nInforme o ano\n");
-            printf("\n");
+            printf("\n\tInforme o ano\n");
+            printf("\n\t\t");
             scanf("%d",&ano);
             fflush(stdin);
             printf("\n");
 
             listarPorData(a1,dia,mes,ano,QUALQUER,0,&encontrou);
             if(!encontrou){
-              printf("\nData nao encontrada\n");
+              printf("\n\tData nao encontrada\n");
             }
             break;
         }
         case REMOVER:{
-            printf("\n Informe o ID do usuario\n");
+            printf("\n\tInforme o ID do usuario\n");
+            printf("\n\t\t");
             scanf("%d",&id);
             fflush(stdin);
-            a2 = Delete(id,a1);
-            listarEmOrdem(a2);
+            a1 = Delete(id,a1);
             break;
         }
 	}
@@ -118,7 +122,6 @@ int buscaID(arvoreB *no, int infoId) {
 	int meio, i, f;
 	i = 0;
 	f = no->numContatos-1;
-
 	while (i <= f){
 		meio = (i + f)/2;
 		contMeio = no->contatos[meio];
@@ -139,6 +142,11 @@ int buscaID(arvoreB *no, int infoId) {
 int buscaNome(arvoreB *no, Contato info) {
 	Contato contMeio;
 	int meio, i, f;
+	strcpy(contMeio.nome,"");
+	contMeio.id = 0;
+	meio = 0;
+    fflush(stdin);
+    fflush(stdout);
 	i = 0;
 	f = no->numContatos-1;
 	while (i <= f){
@@ -176,9 +184,12 @@ Contato buscaContatoPorID(arvoreB *no, int info){
 Contato buscaContatoPorNome(arvoreB *no, char nome[]){
 	int pos; //posição retornada pelo busca binária.
 	Contato c;
+    strcpy(c.nome,"");
+    c.id = 0;
 
 	strcpy(c.nome, nome);
-
+    fflush(stdin);
+    fflush(stdout);
 	while (no != NULL){
 		pos = buscaNome(no, c);
 		if (pos < no->numContatos && (strcmp(no->contatos[pos].nome, nome) == 0)){
@@ -246,7 +257,7 @@ arvoreB *insereID(arvoreB *arvB, Contato info, Bool *h, Contato *infoRetorno){
 	else {
 		pos = buscaID(arvB, info.id);
 		if ((arvB->numContatos > pos) && (arvB->contatos[pos].id = info.id)){
-			printf("Contato ja contido na arvore");
+			printf("\n\tContato ja contido na arvore\n");
 			*h = FALSE;
 		}
 		else {
@@ -319,7 +330,7 @@ arvoreB *insereNome(arvoreB *arvB, Contato info, Bool *h, Contato *infoRetorno){
 	else {
         pos = buscaNome(arvB, info);
 		if ((arvB->numContatos > pos) && (strcmp(arvB->contatos[pos-1].nome,info.nome) == 0)){
-			printf("Contato ja contido na arvore");
+			printf("\n\tContato ja contido na arvore\n");
 			*h = FALSE;
 		}
 		else {
@@ -495,9 +506,15 @@ void listarContatoPorID(arvoreB *arvB){
 
 	printf("\n\t Informe o ID do contato:\n\t\t");
 	scanf("%d", &ident);
+	fflush(stdin);
 
 	c = buscaContatoPorID(arvB, ident);
-	if (c.id == 0){
+
+	if(c.id > 1000 || c.id < 0){
+       c.id = 0;
+	}
+
+	if (c.id == 0 || c.id != ident){
 		printf("\n\tContato nao existe!");
 	}
 	else{
@@ -517,12 +534,18 @@ void listarContatoPorID(arvoreB *arvB){
 void listarContatoPorNome(arvoreB *arvB){
 	char nom[TAM_NOME];
 	Contato c;
+    strcpy(c.nome,"");
+    c.id = 0;
 
 	printf("\n\t Informe o nome do contato:\n\t\t");
 	gets(nom);
-
 	c = buscaContatoPorNome(arvB, nom);
-	if (c.id == 0){
+
+	if(c.id > 1000 || c.id < 0){
+        c.id = 0;
+	}
+
+	if (c.id == 0 || (strcmp(c.nome,nom) > 0) ){
 		printf("\n\tContato nao existe!");
 	}
 	else{
@@ -539,51 +562,60 @@ void listarContatoPorNome(arvoreB *arvB){
 	}
 }
 
-void gravaRegistro (Contato c){
+void gravaRegistro (Contato c,char arquivo[]){
 	FILE *fp;
 	Contato aux = c;
 
-	fp = fopen("ARVORE", "ab");
+	fp = fopen(arquivo, "ab");
 	if(fp!=NULL){
 		fwrite(&aux, sizeof(Contato), 1, fp);
 		fclose(fp);
 	}
 	else{
-		printf("Erro na abertura do arquivo");
+		printf("\n\tErro na abertura do arquivo\n");
 	}
 }
 
-void gravaArvore(arvoreB *arvB){
+void gravaArvore(arvoreB *arvB,char arquivo[]){
 	int i;
 	if (arvB != NULL){
 		for (i = 0; i < arvB->numContatos; i++){
-			gravaArvore(arvB->filhos[i]);
-			gravaRegistro(arvB->contatos[i]);
+			gravaArvore(arvB->filhos[i],arquivo);
+			gravaRegistro(arvB->contatos[i],arquivo);
 		}
-		gravaArvore(arvB->filhos[i]);
+		gravaArvore(arvB->filhos[i],arquivo);
 	}
 }
 
-arvoreB* carregaArvore(){
+arvoreB* carregaArvore(int param){
 	FILE *fp;
 	int result, i;
 	arvoreB* a1 = NULL;
 	Contato aux;
+	result = 0;
 
-	fp = fopen("ARVORE", "rb");
+    if(param == BUSCARID || param == REMOVER){
+        fp = fopen("ARVOREID", "rb");
+    }else{
+        fp = fopen("ARVORENOME", "rb");
+    }
 
 	if(fp!=NULL){
 		for(i=0;i<1000;i++){
 			result+=fread (&aux, sizeof(Contato), 1, fp);
-			a1=insereArvoreBNome(a1, aux);
+			if(param == BUSCARID || param == REMOVER){
+                a1 = insereArvoreBID(a1, aux);
+            }else{
+                a1 = insereArvoreBNome(a1, aux);
+            }
 		}
 		fclose(fp);
 	}
 	else{
-		printf("Erro na abertura do arquivo");
+		printf("\n\tErro na abertura do arquivo\n");
 	}
 
-	printf("\nNro de elementos lidos: %d\n", result);
+	printf("\n\tNro de elementos lidos: %d\n", result);
 
 	return a1;
 }
@@ -591,7 +623,8 @@ arvoreB* carregaArvore(){
 int criarArvore(){
 	FILE *fp;
 	int result, i;
-	arvoreB* a1 = NULL;
+	arvoreB* aNome = NULL;
+	arvoreB* aID = NULL;
 	Contato aux;
 
 	fp = fopen("AGENDA", "rb");
@@ -599,18 +632,20 @@ int criarArvore(){
 	if (fp!=NULL){
 		for(i=0;i<1000;i++){
 			result+=fread (&aux, sizeof(Contato), 1, fp);
-			a1=insereArvoreBNome(a1, aux);
+			aNome = insereArvoreBNome(aNome, aux);
+			aID = insereArvoreBID(aID, aux);
 		}
 		fclose(fp);
 	}
 	else{
-		printf("Erro na abertura do arquivo");
+		printf("\n\tErro na abertura do arquivo");
 		return 0;
 	}
 
 	printf("\n\t ************ AGENDA *************");
 
-	gravaArvore(a1);
+	gravaArvore(aNome,"ARVORENOME");
+	gravaArvore(aID,"ARVOREID");
 
 	return 1;
 }
@@ -622,7 +657,7 @@ arvoreB *Delete(int target, arvoreB *root)
 
    t = root;
    if (!RecDelete(target, t))
-     printf("\nTarget was not in the B-tree.\n");
+     printf("\n\tTarget was not in the B-tree.\n");
    else
      if (root->numContatos == 0) {  /*root is empty. */
        p = root;
@@ -648,7 +683,7 @@ BoolDelete RecDelete(int target,arvoreB *p)
            Successor(p,k);  /*replaces key[k] by its successor*/
            if (!(found = RecDelete(p->contatos[k].id,p->filhos[k])))
              /* We know that the new key[k] is in the leaf. */
-             printf("\nKey not found.\n");
+             printf("\n\tKey not found.\n");
          }else
               Remove(p,k); /*removes key from position k of *p */
       else                 /*Target was not found in current node.*/
@@ -770,24 +805,24 @@ void MoveLeft(arvoreB *p,int k)
 /* Combine: combine adjacent nodes. */
 void Combine(arvoreB *p,int k)
 {
-  int c;
-  arvoreB *q; /*points to the right nodei, which will be emptied and deleted*/
-  arvoreB *l;
+    int c;
+    arvoreB *q; /*points to the right nodei, which will be emptied and deleted*/
+    arvoreB *l;
 
-  q = p->filhos[k];
-  l = p->filhos[k-1];  /* Work with the left node. */
-  l->numContatos++;          /* Insert the key from the parent. */
-  l->contatos[l->numContatos] = p->contatos[k];
-  l->filhos[l->numContatos] = q->filhos[0];
-  for (c=1; c <= q->numContatos; c++){  /* Insert all keys from right node. */
+    q = p->filhos[k];
+    l = p->filhos[k-1];  /* Work with the left node. */
+    l->numContatos++;          /* Insert the key from the parent. */
+    l->contatos[l->numContatos] = p->contatos[k];
+    l->filhos[l->numContatos] = q->filhos[0];
+    for (c=1; c <= q->numContatos; c++){  /* Insert all keys from right node. */
     l->numContatos++;
     l->contatos[l->numContatos] = q->contatos[c];
     l->filhos[l->numContatos] = q->filhos[c];
-  }
-  for (c=k; c<p->numContatos; c++){ /* Delete key from parent node. */
+    }
+    for (c=k; c<p->numContatos; c++){ /* Delete key from parent node. */
     p->contatos[c] = p->contatos[c+1];
     p->filhos[c] = p->filhos[c+1];
-  }
-  p->numContatos--;
-  free(q);    /* Dispose of the empty right node. */
+    }
+    p->numContatos--;
+    free(q);    /* Dispose of the empty right node. */
 }
