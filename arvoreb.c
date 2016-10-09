@@ -1,9 +1,11 @@
 #include "main.h"
 
+int step = 0;
+
 void start(int param){
-    FILE *fp;
-	int result, i, encontrou, dia, mes, ano,idade;
+	int encontrou, dia, mes, ano, idade, id;
 	arvoreB* a1 = NULL;
+	arvoreB* a2 = NULL;
 	Contato aux;
 	encontrou = 0;
 
@@ -44,7 +46,7 @@ void start(int param){
             break;
         }
         case ESPECIFICA:{
-            printf("\nVocê selecionou data especifica");
+            printf("\nVoce selecionou data especifica");
 
             printf("\nInforme o dia");
             printf("\n");
@@ -95,6 +97,14 @@ void start(int param){
             if(!encontrou){
               printf("\nData nao encontrada\n");
             }
+            break;
+        }
+        case REMOVER:{
+            printf("\n Informe o ID do usuario\n");
+            scanf("%d",&id);
+            fflush(stdin);
+            a2 = Delete(id,a1);
+            listarEmOrdem(a2);
             break;
         }
 	}
@@ -603,4 +613,181 @@ int criarArvore(){
 	gravaArvore(a1);
 
 	return 1;
+}
+
+/* Delete: deletes the key target from the B-tree with the given root */
+arvoreB *Delete(int target, arvoreB *root)
+{
+   arvoreB *p,*t;      /* used to dispose of an empty root */
+
+   t = root;
+   if (!RecDelete(target, t))
+     printf("\nTarget was not in the B-tree.\n");
+   else
+     if (root->numContatos == 0) {  /*root is empty. */
+       p = root;
+       root = root->filhos[0];
+       free(p);
+     }
+  return root;
+}
+
+/*RecDelete: look for target to delete*/
+BoolDelete RecDelete(int target,arvoreB *p)
+{
+  int k;  /* location of target or of branch on which to search*/
+  BoolDelete found;
+  printf("\n\t RECDELETE ID: %d", target);
+
+  if (p == NULL)
+    return FALSE;    /*Hitting an empty tree is an error */
+  else{
+       found = SeqSearch(target,p,&k);//procura se esta no nó atual
+       if (found)
+         if (p->filhos[k-1]){     /* test for NULL??? */
+           Successor(p,k);  /*replaces key[k] by its successor*/
+           if (!(found = RecDelete(p->contatos[k].id,p->filhos[k])))
+             /* We know that the new key[k] is in the leaf. */
+             printf("\nKey not found.\n");
+         }else
+              Remove(p,k); /*removes key from position k of *p */
+      else                 /*Target was not found in current node.*/
+           found = RecDelete(target,p->filhos[k]);//se nao estiver desce para um filho de acordo com o resultado de k que vem da função seqSearch
+      /* At this point, the function has returned from a recursive call.*/
+      if (p->filhos[k] != NULL)
+        if (p->filhos[k]->numContatos < MIN)
+          Restore(p,k);
+      return found;
+     }
+}
+
+BoolDelete SeqSearch(int target,arvoreB *p, int *k)
+{
+  if (target < p->contatos[0].id) {
+    *k = 0;
+    return FALSE;
+  }
+   else {
+       /* Sequential Search */
+       *k = p->numContatos;
+       while ((target < p->contatos[*k].id) && *k > 1){
+        (*k)--;
+         step++;
+       }
+       return (target == p->contatos[*k].id);
+	}
+}
+
+/* Remove: removes key[k] and branch[k] from *p */ //so chama remove quando ta na raiz
+void Remove(arvoreB *p,int k)
+{
+  int i;  /* index to move entries */
+  for (i=k+1; i <= p->numContatos; i++){
+  	    printf("\n\t REMOVE KEY[I-1]]: %s KEY[I]:%s",p->contatos[i-1].nome, p->contatos[i].nome);
+
+    p->contatos[i-1] = p->contatos[i];
+	getch();
+    p->filhos[i-1] = p->filhos[i];
+  }
+  p->numContatos--;
+}
+
+void Successor(arvoreB *p, int k)
+{
+  arvoreB *q;  /* used to move down the tree to a leaf */
+  for (q = p->filhos[k]; q->filhos[0]; q = q->filhos[0])
+    ;
+  p->contatos[k] = q->contatos[1];
+}
+
+void Restore(arvoreB *p, int k)
+{
+  if (k == 0)                /* case: leftmost key */
+    if (p->filhos[1]->numContatos >MIN)
+      MoveLeft(p,1);
+    else
+      Combine(p,1);
+  else if (k == p->numContatos)    /* case: rightmost key */
+    if (p->filhos[k-1]->numContatos >MIN)
+      MoveRight(p,k);
+    else
+      Combine(p,k);
+
+  else if (p->filhos[k-1]->numContatos > MIN) /*remaining cases */
+         MoveRight(p,k);
+  else if (p->filhos[k+1]->numContatos > MIN)
+         MoveLeft(p,k+1);
+  else
+      Combine(p,k);
+}
+
+/* MoveRight: move a key to the right. */
+void MoveRight(arvoreB *p,int k)
+{
+  int c;
+  arvoreB *t;
+
+  t = p->filhos[k];
+  for (c = t->numContatos; c>0; c--){
+  /* Shift all keys in the right node one position. */
+     t->contatos[c+1] = t->contatos[c];
+     t->filhos[c+1]=t->filhos[c];
+  }
+  t->filhos[1] = t->filhos[0];  /* Move key from parent to right node. */
+  t->numContatos++;
+  t->contatos[1] = p->contatos[k];
+  t = p->filhos [k-1];  /* Move last key of left node into parent. */
+  p->contatos[k] = t->contatos[t->numContatos];
+
+
+  p->filhos[k]->filhos[0] = t->filhos[t->numContatos];
+  t->numContatos--;
+}
+
+void MoveLeft(arvoreB *p,int k)
+{
+  int c;
+  arvoreB *t;
+
+  /*Move key from parent into left node. */
+  t = p->filhos[k-1];
+  t->numContatos++;
+  t->contatos[t->numContatos] = p->contatos[k];
+  t->filhos[t->numContatos] = p->filhos[k]->filhos[0];
+
+  /* Move key from right node into parent. */
+  t = p->filhos[k];
+  p->contatos[k] = t->contatos[1];
+  t->filhos[0] = t->filhos[1];
+  t->numContatos--;
+  for (c = 1; c <= t->numContatos; c++){
+    /* Shift all keys in right node one position leftward. */
+    t->contatos[c] = t->contatos[c+1];
+    t->filhos[c] = t->filhos[c+1];
+  }
+}
+
+/* Combine: combine adjacent nodes. */
+void Combine(arvoreB *p,int k)
+{
+  int c;
+  arvoreB *q; /*points to the right nodei, which will be emptied and deleted*/
+  arvoreB *l;
+
+  q = p->filhos[k];
+  l = p->filhos[k-1];  /* Work with the left node. */
+  l->numContatos++;          /* Insert the key from the parent. */
+  l->contatos[l->numContatos] = p->contatos[k];
+  l->filhos[l->numContatos] = q->filhos[0];
+  for (c=1; c <= q->numContatos; c++){  /* Insert all keys from right node. */
+    l->numContatos++;
+    l->contatos[l->numContatos] = q->contatos[c];
+    l->filhos[l->numContatos] = q->filhos[c];
+  }
+  for (c=k; c<p->numContatos; c++){ /* Delete key from parent node. */
+    p->contatos[c] = p->contatos[c+1];
+    p->filhos[c] = p->filhos[c+1];
+  }
+  p->numContatos--;
+  free(q);    /* Dispose of the empty right node. */
 }

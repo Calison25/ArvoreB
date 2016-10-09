@@ -14,14 +14,18 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+#define MAX 500
+#define MIN 250
 
 
 typedef enum boolean {
     TRUE = 1, FALSE = 0
 }Bool;
 
-typedef enum{ANULADO,CRIAR,REMOVER,BUSCAR,LISTAGEM,DIFERENCIAL};
-typedef enum{ANULADO1,ALFABETICA,LETRA,TELEFONE,BUSCARID,BUSCARNOME,IDADE,QUALQUER,ESPECIFICA};
+typedef enum{ANULADO,CRIAR,BUSCAR,LISTAGEM,DIFERENCIAL};
+typedef enum{ANULADO1,ALFABETICA,LETRA,TELEFONE,BUSCARID,BUSCARNOME,IDADE,QUALQUER,ESPECIFICA,REMOVER};
+
+typedef int BoolDelete;
 
 typedef struct data{
 	int dia;
@@ -69,3 +73,12 @@ void gravaRegistro (Contato c);
 void gravaArvore(arvoreB *arvB);
 arvoreB* carregaArvore();
 int criarArvore();
+arvoreB *Delete(int target, arvoreB *root);
+BoolDelete RecDelete(int target,arvoreB *p);
+BoolDelete SeqSearch(int target,arvoreB *p, int *k);
+void Remove(arvoreB *p,int k);
+void Successor(arvoreB *p, int k);
+void Restore(arvoreB *p, int k);
+void Combine(arvoreB *p,int k);
+void MoveLeft(arvoreB *p,int k);
+void MoveRight(arvoreB *p,int k);

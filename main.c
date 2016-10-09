@@ -152,7 +152,32 @@ int main (){
                     break;
                 }
                 case REMOVER:{
-                    printf("REMOVENDO");
+                    start(REMOVER);
+                    al_clear_to_color(al_map_rgb(255, 255, 255));
+                    al_draw_bitmap(background, 0, 0, 0);
+                    al_draw_bitmap(arvore, 150, 30, 0);
+                    al_draw_text(font, al_map_rgb(255,255,255), 360, 50, 0, "Removido");
+                    al_draw_bitmap(voltarImg, 20, 10, 0);
+                    al_flip_display();
+
+
+                    while(!sair || !voltar){
+                        al_wait_for_event(queue_events, &event);
+
+                        if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                            sair = 1;
+                            break;
+                        }
+
+                        if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
+                            if((event.mouse.x >= 20 && event.mouse.x <= 40) && (event.mouse.y >= 15 && event.mouse.y <= 30)){
+                                // Caso clique em voltar, retorna para tela anterior
+                                voltar = 1;
+                                break;
+                            }
+
+                        }
+                    }
                     break;
                 }
                 case BUSCAR:{
